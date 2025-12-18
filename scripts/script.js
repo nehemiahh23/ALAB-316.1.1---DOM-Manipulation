@@ -1,24 +1,30 @@
 // Menu data structure
 
 var menuLinks = [
-	{text: 'about', href: '/about'},  
-	{text: 'catalog', href: '#', subLinks: [
-  
-	  {text: 'all', href: '/catalog/all'},  
-	  {text: 'top selling', href: '/catalog/top'},  
-	  {text: 'search', href: '/catalog/search'},  
-	]},  
-	{text: 'orders', href: '#' , subLinks: [
-  
-	  {text: 'new', href: '/orders/new'},  
-	  {text: 'pending', href: '/orders/pending'},  
-	  {text: 'history', href: '/orders/history'},  
-	]},
-	{text: 'account', href: '#', subLinks: [
-	  {text: 'profile', href: '/account/profile'},
-	  {text: 'sign out', href: '/account/signout'},
-	]},
-  ];
+	{ text: 'about', href: '/about' },
+	{
+		text: 'catalog', href: '#', subLinks: [
+
+			{ text: 'all', href: '/catalog/all' },
+			{ text: 'top selling', href: '/catalog/top' },
+			{ text: 'search', href: '/catalog/search' },
+		]
+	},
+	{
+		text: 'orders', href: '#', subLinks: [
+
+			{ text: 'new', href: '/orders/new' },
+			{ text: 'pending', href: '/orders/pending' },
+			{ text: 'history', href: '/orders/history' },
+		]
+	},
+	{
+		text: 'account', href: '#', subLinks: [
+			{ text: 'profile', href: '/account/profile' },
+			{ text: 'sign out', href: '/account/signout' },
+		]
+	},
+];
 
 // Part 1: Getting Started
 // Select and cache the <main> element in a variable named mainEl
@@ -78,21 +84,53 @@ subMenuEl.style.backgroundColor = "var(--sub-menu-bg)"
 // Add class of to the subMenuEl element
 subMenuEl.classList.add("flex-around")
 
-// Part 4: Adding Menu Interaction
+// Set the CSS
+subMenuEl.style.position = "absolute"
+subMenuEl.style.top = "0"
+
+// Part 4: Adding Menu Interaction + Part 5: Adding Submenu Interaction
 // Select and cache the all of the <a> elements inside of topMenuEl
 const topMenuLinks = document.querySelectorAll("#top-menu a")
 
 // Attach a delegated 'click' event listener
-function handleClick(e) {
+function handleTopMenuClick(e) {
 	e.preventDefault()
-	if (e.target.tagName !== "A") return
 	
+	// verify that the target is an anchor 
+	if (e.target.tagName !== "A") return
+
+	
+	// set all siblings to inactive
 	for (child of e.target.parentNode.childNodes) {
 		if (child === e.target) continue
 		child.classList.remove("active")
 	}
 	
+	// Change submenu position if target is inactive and has sub menu content
+	const linkObj = menuLinks.find(link => link.text == e.target.textContent)
+	if (!e.target.classList.contains("active") && linkObj.subLinks) {
+		subMenuEl.style.top = "100%"
+		buildSubMenu(linkObj.subLinks)
+	} else {
+		subMenuEl.style.top = "0"
+	}
+
+	
+	// toggle active
 	e.target.classList.toggle("active")
 }
 
-topMenuEl.addEventListener("click", handleClick)
+// helper function
+function buildSubMenu(arr) {
+	subMenuEl.innerHTML = ""
+
+	for (link of arr) {
+		const newLink = document.createElement("a")
+		newLink.href = link.href
+		newLink.textContent = link.text
+		subMenuEl.append(newLink)
+	}
+
+}
+
+topMenuEl.addEventListener("click", handleTopMenuClick)

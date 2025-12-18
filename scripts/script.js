@@ -94,11 +94,7 @@ const topMenuLinks = document.querySelectorAll("#top-menu a")
 
 // Attach a delegated 'click' event listener
 function handleTopMenuClick(e) {
-	e.preventDefault()
-	
-	// verify that the target is an anchor 
-	if (e.target.tagName !== "A") return
-
+	if (!isAnchor(e)) return
 	
 	// set all siblings to inactive
 	for (child of e.target.parentNode.childNodes) {
@@ -113,6 +109,7 @@ function handleTopMenuClick(e) {
 		buildSubMenu(linkObj.subLinks)
 	} else {
 		subMenuEl.style.top = "0"
+		h1.textContent = e.target.textContent
 	}
 
 	
@@ -120,7 +117,18 @@ function handleTopMenuClick(e) {
 	e.target.classList.toggle("active")
 }
 
-// helper function
+// Attach a delegated 'click' event listener to subMenuEl
+function handleSubMenuClick(e) {
+	if (!isAnchor(e)) return
+	
+	subMenuEl.style.top = ""
+	for (child of topMenuLinks) {
+		child.classList.remove("active")
+	}
+	h1.textContent = e.target.textContent
+}
+
+// submenu helper function
 function buildSubMenu(arr) {
 	subMenuEl.innerHTML = ""
 
@@ -133,4 +141,12 @@ function buildSubMenu(arr) {
 
 }
 
+function isAnchor(e) {
+	e.preventDefault()
+	
+	// verify that the target is an anchor 
+	return e.target.tagName === "A" ? true : false
+}
+
 topMenuEl.addEventListener("click", handleTopMenuClick)
+subMenuEl.addEventListener("click", handleSubMenuClick)

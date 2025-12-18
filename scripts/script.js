@@ -49,7 +49,6 @@ topMenuEl.style.backgroundColor = "var(--top-menu-bg)"
 topMenuEl.classList.add("flex-around")
 
 // Part 3: Adding Menu Buttons
-
 // Iterate over the entire menuLinks array
 for (let link of menuLinks) {
 	// Create an <a> element
@@ -67,7 +66,6 @@ for (let link of menuLinks) {
 
 // ALAB Part Two
 // Part 3: Creating the Submenu
-
 // Select and cache the <nav id="sub-menu"> element
 const subMenuEl = document.getElementById("sub-menu")
 
@@ -81,3 +79,20 @@ subMenuEl.style.backgroundColor = "var(--sub-menu-bg)"
 subMenuEl.classList.add("flex-around")
 
 // Part 4: Adding Menu Interaction
+// Select and cache the all of the <a> elements inside of topMenuEl
+const topMenuLinks = document.querySelectorAll("#top-menu a")
+
+// Attach a delegated 'click' event listener
+function handleClick(e) {
+	e.preventDefault()
+	if (e.target.tagName !== "A") return
+	
+	for (child of e.target.parentNode.childNodes) {
+		if (child === e.target) continue
+		child.classList.remove("active")
+	}
+	
+	e.target.classList.toggle("active")
+}
+
+topMenuEl.addEventListener("click", handleClick)
